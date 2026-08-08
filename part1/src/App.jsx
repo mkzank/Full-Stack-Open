@@ -6,7 +6,7 @@ const Button = ({onClick, text}) => (
     {text}
   </button>
 )
-const ShowStatistics = ({text, number}) => {
+const Statistics = ({text, number}) => {
   if (text == "positive") {
     return <p> {text} {number} %</p>
   }
@@ -62,12 +62,12 @@ const App = () => {
       <Button onClick={handleStatistics("neutral")} text="neutral"> </Button>
       <Button onClick={handleStatistics("bad")} text="bad"> </Button>
       <Header headerText="statistics"> </Header>
-      <ShowStatistics text="good" number={good}></ShowStatistics>
-      <ShowStatistics text="neutral" number={neutral}></ShowStatistics>
-      <ShowStatistics text="bad" number={bad}></ShowStatistics>
-      <ShowStatistics text="all" number={all}></ShowStatistics>
-      <ShowStatistics text="average" number={average}></ShowStatistics>
-      <ShowStatistics text="positive" number={positive}></ShowStatistics>
+      <Statistics text="good" number={good}></Statistics>
+      <Statistics text="neutral" number={neutral}></Statistics>
+      <Statistics text="bad" number={bad}></Statistics>
+      <Statistics text="all" number={all}></Statistics>
+      <Statistics text="average" number={average}></Statistics>
+      <Statistics text="positive" number={positive}></Statistics>
     </div>
   )
 }
