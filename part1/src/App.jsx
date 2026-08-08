@@ -6,7 +6,12 @@ const Button = ({onClick, text}) => (
     {text}
   </button>
 )
-const ShowStatistics = ({text, number}) => <p> {text} {number}</p>
+const ShowStatistics = ({text, number}) => {
+  if (text == "positive") {
+    return <p> {text} {number} %</p>
+  }
+  else return <p> {text} {number}</p>
+}
 
 
 
