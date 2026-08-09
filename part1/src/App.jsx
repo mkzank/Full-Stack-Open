@@ -1,6 +1,8 @@
 import { useState } from 'react'
 
 
+const Header = ({text}) => <h1> {text} </h1>
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -24,17 +26,21 @@ const App = () => {
     setSelected(randomInt)
   }
   const handleVote = () => {
-    const copy = {...vote}
+    const copy = [...vote]
     copy[selected] += 1
     setVote(copy)
   }
   
   return (
     <div>
+      <Header text="Anecdote of the day"></Header>
       <p> {anecdotes[selected]} </p>
       <p> has {vote[selected]} votes </p>
       <button onClick={handleVote}> vote </button>
       <button onClick={handleSelected}> next anecdotes</button>
+      <Header text="Anecdote with most votes"></Header>
+      <p> {anecdotes[vote.indexOf(Math.max(...vote))]} </p>
+      <p> has {Math.max(...vote)} votes </p>
     </div>
   )
 }
