@@ -10,11 +10,17 @@ const Button = ({onClick, text}) => (
 const StatisticsLine = ({text, value}) => {
   if (text == "positive") {
     return (
-      <p> {text} {value} %</p>
+      <tr> 
+        <th style={{textAlign: 'left', fontWeight: 'normal'}}> {text}  </th>
+        <th style={{textAlign: 'left', fontWeight: 'normal'}}> {value} %</th>
+      </tr>
     )
   }
   else return (
-    <p> {text} {value} </p>
+    <tr> 
+      <th style={{textAlign: 'left', fontWeight: 'normal'}}> {text} </th>
+      <th style={{textAlign: 'left', fontWeight: 'normal'}}> {value} </th>
+    </tr>
   )
 }
 const Statistics = ({good, neutral, bad, all, average, positive}) => {
@@ -26,12 +32,16 @@ const Statistics = ({good, neutral, bad, all, average, positive}) => {
   else {
     return (
       <>
-        <StatisticsLine text="good" value={good}></StatisticsLine>
-        <StatisticsLine text="neutral" value={neutral}></StatisticsLine>
-        <StatisticsLine text="bad" value={bad}></StatisticsLine>
-        <StatisticsLine text="all" value={all}></StatisticsLine>
-        <StatisticsLine text="average" value={average}></StatisticsLine>
-        <StatisticsLine text="positive" value={positive}></StatisticsLine>
+        <table> 
+          <tbody> 
+            <StatisticsLine text="good" value={good}></StatisticsLine>
+            <StatisticsLine text="neutral" value={neutral}></StatisticsLine>
+            <StatisticsLine text="bad" value={bad}></StatisticsLine>
+            <StatisticsLine text="all" value={all}></StatisticsLine>
+            <StatisticsLine text="average" value={average}></StatisticsLine>
+            <StatisticsLine text="positive" value={positive}></StatisticsLine>
+          </tbody>
+        </table> 
       </>
     )
   }
