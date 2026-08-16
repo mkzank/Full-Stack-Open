@@ -1,9 +1,7 @@
 import Header from './Course/Header'
 import Content from './Course/Content'
+import Total from './Course/Total'
 
-
-const Total = ({total}) => <h3>Total of {total} exercises</h3>
-let total = 0
 
 const App = () => {
   const course = {
@@ -33,7 +31,10 @@ const App = () => {
     ]
   }
 
-  course.parts.forEach(p => total += p.exercises)
+  const total = course.parts.reduce((s, p) => {
+    console.log("s is: ", s, "p is: ", p.exercises)
+    return s + p.exercises
+  }, 0) 
 
   return (
     <>
