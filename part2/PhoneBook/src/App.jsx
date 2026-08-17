@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import PhoneBook from './Components/PhoneBook'
+import FilterSearch from './Components/FilterSearch'
+import PersonForm from './Components/PersonForm'
 
 const App = () => {
 
@@ -20,7 +22,6 @@ const App = () => {
 
   const handleNewName = (event) => setNewName(event.target.value)
   const handleNewNumber = (event) => setNewNumber(event.target.value)
-  const handleFilterName = (event) => setFilterName(event.target.value)
 
   const updatePersons = (event) => {
     event.preventDefault()
@@ -30,34 +31,20 @@ const App = () => {
     else {
       const newPersonObject = {name: newName, number: newNumber, id: persons.length + 1}
       setPersons(persons.concat(newPersonObject))
-      console.log("Person added: ", newName)
+      console.log("Person added: ", newPersonObject)
     }
   } 
 
-  const filterPersonsList = (filterName.trim() === "")
+  let filterPersonsList = (filterName.trim() === "")
   ? persons 
   : persons.filter(p => p.name.toLowerCase().includes(filterName.toLowerCase()))
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <form> 
-        <div> 
-          filter shown with <input onChange={handleFilterName}/> 
-        </div>
-      </form>
-      <h2> add a new </h2>
-      <form onSubmit={updatePersons}>
-        <div>
-          name: <input onChange={handleNewName}/>
-        </div>
-        <div>
-          number: <input onChange={handleNewNumber}/>
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <FilterSearch setter={setFilterName}></FilterSearch>
+      <h2> Add a new </h2>
+        <PersonForm updatePersons={updatePersons} handleNewName={handleNewName} handleNewNumber={handleNewNumber}></PersonForm>
       <h2>Numbers</h2>
       <ul>
         <PhoneBook persons={filterPersonsList}></PhoneBook>
