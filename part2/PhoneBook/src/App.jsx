@@ -49,7 +49,6 @@ const App = () => {
       <ul>
         <PhoneBook persons={filterPersonsList}></PhoneBook>
       </ul>
-      <div>debug: filteredname: {filterName} </div>
     </div>
   )
 }
