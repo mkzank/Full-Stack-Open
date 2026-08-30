@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import PhoneBook from './Components/PhoneBook'
 import FilterSearch from './Components/FilterSearch'
 import PersonForm from './Components/PersonForm'
-import axios from 'axios'
+import phoneBookService from './service/phoneBookService'
 
 const App = () => {
 
@@ -13,13 +13,9 @@ const App = () => {
   const [filterName, setFilterName] = useState('')
   
   useEffect(() => {
-    axios
-    .get('http://localhost:3001/persons')
-    .then(resp => {
-      console.log("response is: ", resp)
-      setPersons(resp.data)
-    })
-    
+    phoneBookService
+    .getAll()
+    .then(data => setPersons(data))
   }, [])
 
   const handleNewName = (event) => setNewName(event.target.value)
@@ -32,6 +28,7 @@ const App = () => {
     }
     else {
       const newPersonObject = {name: newName, number: newNumber, id: persons.length + 1}
+      phoneBookService.create(newPersonObject)
       setPersons(persons.concat(newPersonObject))
       console.log("Person added: ", newPersonObject)
     }
