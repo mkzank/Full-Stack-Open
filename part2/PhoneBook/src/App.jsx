@@ -28,11 +28,26 @@ const App = () => {
     }
     else {
       const newPersonObject = {name: newName, number: newNumber, id: persons.length + 1}
-      phoneBookService.create(newPersonObject)
-      setPersons(persons.concat(newPersonObject))
-      console.log("Person added: ", newPersonObject)
+      phoneBookService
+      .create(newPersonObject)
+      .then(data => {
+        setPersons(persons.concat(data))
+        console.log("Person added: ", data)
+      })
     }
   } 
+
+  const handleDelete = (id) => {
+    if (window.confirm(`Delete ${persons.find(p => p.id === id).name}? `)) {
+      phoneBookService
+      .deletePerson(id)
+      .then(data => {
+        setPersons(persons.filter(p => p.id !== id))
+        console.log(`Person ${data.name} has been deleted.`)
+      })
+      .catch(err => console.log("Person deleted is not found."))
+    }
+  }
 
   let filterPersonsList = (filterName.trim() === "")
   ? persons 
@@ -46,7 +61,7 @@ const App = () => {
         <PersonForm updatePersons={updatePersons} handleNewName={handleNewName} handleNewNumber={handleNewNumber}></PersonForm>
       <h2>Numbers</h2>
       <ul>
-        <PhoneBook persons={filterPersonsList}></PhoneBook>
+        <PhoneBook persons={filterPersonsList} deleteFun={handleDelete}></PhoneBook>
       </ul>
     </div>
   )
