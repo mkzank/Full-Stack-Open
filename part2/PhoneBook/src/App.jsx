@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { use, useEffect, useState } from 'react'
 import PhoneBook from './Components/PhoneBook'
 import FilterSearch from './Components/FilterSearch'
 import PersonForm from './Components/PersonForm'
@@ -13,6 +13,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filterName, setFilterName] = useState('')
   const [notiMessage, setNotiMessage] = useState('')
+  const [isErr, setIsErr] = useState(false)
   
   useEffect(() => {
     phoneBookService
@@ -25,37 +26,50 @@ const App = () => {
 
   const updatePersons = (event) => {
     event.preventDefault()
-    if (persons.some(p => p.name === newName)) {
-      if (window.confirm(`${newName} is already added to the phonebook, replace the old number with the new one?`)) {
-        const existingPerson = persons.find(p => p.name === newName)
-        const updatePersonObject = {...existingPerson, number: newNumber}
-        const existingPersonId = existingPerson.id
+    phoneBookService
+    .getAll()
+    .then(data => {
+      setPersons(data)
+      if (persons.some(p => p.name === newName)) {
+        if (window.confirm(`${newName} is already added to the phonebook, replace the old number with the new one?`)) {
+          const existingPerson = persons.find(p => p.name === newName)
+          const updatePersonObject = {...existingPerson, number: newNumber}
+          const existingPersonId = existingPerson.id
+          phoneBookService
+          .updatePerson(existingPersonId, updatePersonObject)
+          .then(data => {
+            setPersons(persons.map(p => p.id === existingPersonId? updatePersonObject : p))
+            setNotiMessage(`${data.name} has been updated, with number: ${data.number}`)
+            console.log(`${data.name} has been updated, with number: ${data.number}`)
+            setTimeout(() => {
+              setNotiMessage(null)
+            }, 5000)
+          })
+          .catch(err => {
+            console.log(`error updating person: ${err}`)
+            setNotiMessage(`Information of ${newName} has already been removed from server`)
+            setIsErr(true)
+            setTimeout(() => {
+              setNotiMessage(null)
+              setIsErr(false)
+            }, 5000)
+          })
+        }
+      }
+      else {
+        const newPersonObject = {name: newName, number: newNumber, id: persons.length + 1}
         phoneBookService
-        .updatePerson(existingPersonId, updatePersonObject)
+        .create(newPersonObject)
         .then(data => {
-          setPersons(persons.map(p => p.id === existingPersonId? updatePersonObject : p))
-          setNotiMessage(`${data.name} has been updated, with number: ${data.number}`)
-          console.log(`${data.name} has been updated, with number: ${data.number}`)
+          setNotiMessage(`Added ${data.name}`)
+          setPersons(persons.concat(data))
+          console.log("Person added: ", data)
           setTimeout(() => {
             setNotiMessage(null)
           }, 5000)
         })
-        .catch(err => console.log(`error updating person: ${err}`))
       }
-    }
-    else {
-      const newPersonObject = {name: newName, number: newNumber, id: persons.length + 1}
-      phoneBookService
-      .create(newPersonObject)
-      .then(data => {
-        setNotiMessage(`Added ${data.name}`)
-        setPersons(persons.concat(data))
-        console.log("Person added: ", data)
-        setTimeout(() => {
-          setNotiMessage(null)
-        }, 5000)
-      })
-    }
+    })
   } 
 
   const handleDelete = (id) => {
@@ -66,7 +80,20 @@ const App = () => {
         setPersons(persons.filter(p => p.id !== id))
         console.log(`Person ${data.name} has been deleted.`)
       })
-      .catch(err => console.log("Person deleted is not found."))
+      .catch(err => {
+        console.log("Person deleted is not found.")
+        setNotiMessage(`${persons.find(p => p.id === id).name} has been deleted from server by someone else`)
+        setIsErr(true)
+        setTimeout(() => {
+          setNotiMessage(null)
+          setIsErr(false)
+        }, 5000);
+        phoneBookService
+        .getAll()
+        .then(data => {
+          setPersons(data)
+        })
+      })
     }
   }
 
@@ -77,7 +104,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={notiMessage}/>
+      <Notification message={notiMessage} isErr={isErr}/>
       <FilterSearch setter={setFilterName}></FilterSearch>
       <h2> Add a new </h2>
         <PersonForm updatePersons={updatePersons} handleNewName={handleNewName} handleNewNumber={handleNewNumber}></PersonForm>
