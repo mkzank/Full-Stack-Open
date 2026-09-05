@@ -3,6 +3,7 @@ import PhoneBook from './Components/PhoneBook'
 import FilterSearch from './Components/FilterSearch'
 import PersonForm from './Components/PersonForm'
 import phoneBookService from './service/phoneBookService'
+import Notification from './Components/Notification'
 
 const App = () => {
 
@@ -11,6 +12,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filterName, setFilterName] = useState('')
+  const [notiMessage, setNotiMessage] = useState('')
   
   useEffect(() => {
     phoneBookService
@@ -32,7 +34,11 @@ const App = () => {
         .updatePerson(existingPersonId, updatePersonObject)
         .then(data => {
           setPersons(persons.map(p => p.id === existingPersonId? updatePersonObject : p))
+          setNotiMessage(`${data.name} has been updated, with number: ${data.number}`)
           console.log(`${data.name} has been updated, with number: ${data.number}`)
+          setTimeout(() => {
+            setNotiMessage(null)
+          }, 5000)
         })
         .catch(err => console.log(`error updating person: ${err}`))
       }
@@ -42,8 +48,12 @@ const App = () => {
       phoneBookService
       .create(newPersonObject)
       .then(data => {
+        setNotiMessage(`Added ${data.name}`)
         setPersons(persons.concat(data))
         console.log("Person added: ", data)
+        setTimeout(() => {
+          setNotiMessage(null)
+        }, 5000)
       })
     }
   } 
@@ -67,6 +77,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notiMessage}/>
       <FilterSearch setter={setFilterName}></FilterSearch>
       <h2> Add a new </h2>
         <PersonForm updatePersons={updatePersons} handleNewName={handleNewName} handleNewNumber={handleNewNumber}></PersonForm>
