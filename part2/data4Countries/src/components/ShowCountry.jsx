@@ -1,3 +1,5 @@
+import ShowWeather from "./ShowWeather"
+
 const ShowCountry = ({country}) => {
     const languages = country.languages ? Object.values(country.languages) : []
     return (
@@ -9,7 +11,8 @@ const ShowCountry = ({country}) => {
             <ul> 
                 {languages.map(lang => <li key={lang}> {lang} </li>)}
             </ul>
-            <img src={country.flags.png}/> 
+            <img src={country.flags.png}/>
+            <ShowWeather cityName={country.name.common}/> 
         </>
     )
 }

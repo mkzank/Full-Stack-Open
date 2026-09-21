@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import ShowCountry from "./ShowCountry"
+import ShowCountry from "./showCountry"
 
 const Country = ({filteredCountries, isGettingData}) => {
 
