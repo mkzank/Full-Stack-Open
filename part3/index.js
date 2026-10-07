@@ -27,7 +27,19 @@ let persons = [
 
 app.get('/api/persons', (req, resp) => {
     resp.json(persons)
-    console.log("Called get persons route")
+})
+
+app.get('/api/persons/:id', (req, resp) => {
+    const id = req.params.id
+    const person = persons.find(p => p.id === id)
+    if (person) {
+        resp.json(person)
+        console.log(`Found person id: ${id}`)
+    }
+    else {
+        resp.status(404).end()
+        console.log(`Cannot find person.`)
+    }
 })
 
 app.get('/info', (req, resp) => {
@@ -35,6 +47,7 @@ app.get('/info', (req, resp) => {
     resp.write(`PhoneBook has info for ${numPeople} people \n`)
     resp.write(Date().toString())
     resp.end()
+    console.log('Fetched persons.')
 })
 
 const PORT = 3001
