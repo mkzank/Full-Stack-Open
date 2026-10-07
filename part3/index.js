@@ -24,9 +24,17 @@ let persons = [
     }
 ]
 
+
 app.get('/api/persons', (req, resp) => {
     resp.json(persons)
     console.log("Called get persons route")
+})
+
+app.get('/info', (req, resp) => {
+    let numPeople = persons.length
+    resp.write(`PhoneBook has info for ${numPeople} people \n`)
+    resp.write(Date().toString())
+    resp.end()
 })
 
 const PORT = 3001
