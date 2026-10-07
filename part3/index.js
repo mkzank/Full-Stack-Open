@@ -1,5 +1,6 @@
 const express = require('express')
 const app = express()
+app.use(express.json())
 
 let persons = [
     { 
@@ -54,6 +55,20 @@ app.delete('/api/persons/:id', (req, resp) => {
     const id = req.params.id
     persons = persons.filter(p => p.id !== id)
     resp.status(204).end()
+})
+
+app.post('/api/persons', (req, resp) => {
+    const randomInt = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER)
+    console.log(`DEBUG largest int: ${Number.MAX_SAFE_INTEGER}`)
+    console.log(`DEBUG randomInt: ${randomInt}`)
+    const body = req.body
+    const newPerson = {
+        "name": String(body.name),
+        "number": String(body.number)
+    }
+    newPerson.id = String(randomInt)
+    persons = persons.concat(newPerson)
+    resp.json(newPerson)
 })
 
 const PORT = 3001
