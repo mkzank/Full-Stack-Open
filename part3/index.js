@@ -62,6 +62,17 @@ app.post('/api/persons', (req, resp) => {
     console.log(`DEBUG largest int: ${Number.MAX_SAFE_INTEGER}`)
     console.log(`DEBUG randomInt: ${randomInt}`)
     const body = req.body
+    if (!body.name || !body.number || body.name === "" || body.number === "") {
+        const err = { error: 'name or number is missing' }
+        console.log('create person error: name or number missing.')
+        return resp.status(400).json(err)
+    }
+    const findDup = persons.find(p => p.name === body.name)
+    if (findDup) {
+        const err = { error: 'name must be unique' }
+        console.log('Create person error: name is duplicated.')
+        return resp.status(400).json(err)
+    }z  
     const newPerson = {
         "name": String(body.name),
         "number": String(body.number)
