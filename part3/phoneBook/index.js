@@ -2,8 +2,16 @@ const express = require('express')
 const morgan = require('morgan')
 const app = express()
 app.use(express.json())
-app.use(morgan('tiny'))
 
+morgan.token("personName", (req, resp) => req.body.name)
+morgan.token("number", (req, resp) => req.body.number)
+app.use(morgan('tiny'))
+app.use(morgan((tokens, req, resp) => {
+    return JSON.stringify({
+        name: tokens.personName(req, resp), 
+        number: tokens.number(req, resp)
+    })
+}))
 
 let persons = [
     { 
@@ -75,7 +83,7 @@ app.post('/api/persons', (req, resp) => {
         const err = { error: 'name must be unique' }
         console.log('Create person error: name is duplicated.')
         return resp.status(400).json(err)
-    }z  
+    }
     const newPerson = {
         "name": String(body.name),
         "number": String(body.number)
